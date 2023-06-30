@@ -7,6 +7,21 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 def make_dataframe(path):
+    """
+    This function recives a path of a csv file, transforming it into a dataframe, 
+    then the dataframe is separated into gravity and movement components and 
+    calculations of stadistics such as mean, std are performed, considering a 
+    window size of 50 samples and concatenates all of the dataframes into a single 
+    df with all the stadistics calculated
+
+    Parameters:
+        path (str): path to the csv file
+
+    Returns:
+        pandas.DataFrame: The function returns a single dataframe 
+        with all the stadistics calculated of the window size
+    """
+    
     df = pd.read_csv(path)
     df['vector_mag_back'] = np.linalg.norm(df[['back_x', 'back_y', 'back_z']], axis=1)
     df['vector_mag_thigh'] = np.linalg.norm(df[['thigh_x', 'thigh_y', 'thigh_z']], axis=1)
@@ -27,7 +42,7 @@ def make_dataframe(path):
     for column in columns_to_filter:
         gravity_df[column] = signal.lfilter(b, a, df[column])
 
-    ### Orientation information
+    ## Orientation information
     window_size = 50
     columns_to_calculate = ['back_x', 'back_y', 'back_z', 'thigh_x', 'thigh_y', 'thigh_z', 'vector_mag_back', 'vector_mag_thigh']
     # Calculate the stats for each window
@@ -65,7 +80,7 @@ def make_dataframe(path):
         movement_df[column + '_freq'] = magnitude_spectrum
     # The DataFrame 'movement_df' now contains the frequency-domain representation of each axis in separate columns
 
-    ### Movement information
+    ## Movement information
     window_size = 50
     columns_to_calculate = ['back_x', 'back_y', 'back_z', 'thigh_x', 'thigh_y', 'thigh_z', 'vector_mag_back', 'vector_mag_thigh']
     # Calculate the stats for each window
