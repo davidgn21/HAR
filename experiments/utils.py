@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import scipy.signal as signal
 import os
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 
 
@@ -10,9 +11,9 @@ def make_dataframe(path):
     """
     This function recives a path of a csv file, transforming it into a dataframe, 
     then the dataframe is separated into gravity and movement components and 
-    calculations of stadistics such as mean, std are performed, considering a 
-    window size of 50 samples and concatenates all of the dataframes into a single 
-    df with all the stadistics calculated
+    calculations of stadistics such as mean, std are performed considering a 
+    window size of 50 samples and then, all of the dataframes are concatenated
+    into a single df with all the stadistics calculated
 
     Parameters:
         path (str): path to the csv file
@@ -106,21 +107,7 @@ def make_dataframe(path):
     res_df = pd.concat([res_gravity_df, res_movement_df, res_freq_movement_df], axis=1).dropna()
     res_df['label'] = res_df['label'].astype(int)
 
-
-    ### Min-Max scaling of the resulting dataframe
-    # Create an instance of the MinMaxScaler
-    scaler = MinMaxScaler()
-    # Select the columns
-    column_to_exclude = 'label'
-    numerical_columns = res_df.select_dtypes(include='number').columns.drop(column_to_exclude).tolist()
-
-    # Apply min-max scaling to the numerical columns
-    res_df[numerical_columns] = scaler.fit_transform(res_df[numerical_columns])
-    
     return res_df
-
-
-
 
 
 def read_files(path_name):
@@ -134,11 +121,26 @@ def read_files(path_name):
     final_df = pd.concat(df_list, axis=0)
     return final_df
 
-
-
-
 # df_final = read_files('/home/david/Documents/HAR/data/harth')
 # print(df_final)
+
+
+def pca_transofrmation(df):
+    # Scale the data
+    y = df.iloc[:, 0].values
+    X = df.iloc[:, 1:].values
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # Perform PCA
+    n_comp = 26
+    pca = PCA(n_components=n_comp)
+    X_pca = pca.fit_transform(X_scaled)
+    col_names = ['PC{}'.format(i+1) for i in range(n_comp)]
+    X_pca = pd.DataFrame(X_pca, columns=col_names)
+
+    return X_pca, y
+
 
 
 
