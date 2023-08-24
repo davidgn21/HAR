@@ -22,4 +22,5 @@ The folder [data](https://github.com/davidgn21/HAR/tree/main/data) contains the 
 ## Machine Learning Experiments
 The folder [experiments](https://github.com/ntnu-ai-lab/harth-ml-experiments/tree/main/experiments) contains all our experiments. It is possible to train a K-Nearest Neighbors, a Support Vector Machine, a Random Forest, a Convolutional Neural Network.
 
-
+## Article
+The folder [article](https://github.com/davidgn21/HAR/tree/main/article) contains the paper of this reaserch in pdf
